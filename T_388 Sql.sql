@@ -217,19 +217,16 @@ select *, length(fullname), trim(fullname) as All_trim, length(trim(fullname)) a
 select *, length(fullname), ltrim(fullname) as lefttrim, length(ltrim(fullname)) as lefttrimlen,rtrim(fullname) as Refttrim, length(Rtrim(fullname)) as Refttrimlen from trim;
 -- inserted two query in single line to sort the table
 -- single row subquery ** do not use orderby in inner query** ** inner querry executed gives only one value
-
-
-
-
-
-
-
-
-
-
-
-
-
+select age from employee where employeeid=1002;
+select age from employee where fullname='Mary Smith';
+select * from employee where age= (select age from employee where fullname='Mary Smith'); -- query to find the age or info of other employee have age same as mary smith --
+select fullname,age from employee where age=27;
+select * from employee where salary=(select salary from employee where fullname="John Doe");-- salary same as john doe --
+select * from employee where department=(select department from employee where fullname="John Doe");
+select salary from employee order by salary desc;
+select max(salary) from employee;
+select max(salary) from employee where salary < (select max(salary) from employee); -- second highest salary --
+select max(salary) from employee where salary < (select max(salary) from employee where salary < (select max(salary) from employee)); -- third highest salary--
 -- multi row sub query (inner querry when executed gives more than two values) 
 select age from employee where employeeId in (1002,1003); 
 select * from employee where age in(select age from employee where employeeid in (1002,1003)); -- use to get info of all employee whoes employeeid is 1002,1003
@@ -241,6 +238,59 @@ select * from employee where salary>=any(select Salary from employee where Emplo
 select * from employee where salary>All(select Salary from employee where EmployeeId between 1001 and 1003); -- All uses greater than maximum and less than minimum also it usses "and" logic 
 select * from employee where salary<All(select Salary from employee where EmployeeId between 1001 and 1003);
 -- joins subquerry
+-- inner query ** inner queery is as same as join queery we can use inner join as well as only join to perform the querry
+select name_t388.ID,Name,Salary from name_t388 join salary_t388 on name_t388.ID = salary_t388.ID; -- "on" is the imp clause used in all join inner etc querry 
+-- left join (left join means only the left side of the all id will be consider along with intersecting/similar record of the right side)
+select salary_t388.ID,Name,Salary from salary_t388 left join name_t388 on salary_t388.ID = name_t388.ID; 
+-- position of the table in left join matters like if you mention right table first than the keyword and the left it will consider right as left and left as right
+select name_t388.ID,Name,Salary from name_t388 left join salary_t388 on salary_t388.ID = name_t388.ID; 
+select name_t388.ID,Name,Salary from name_t388 right join salary_t388 on salary_t388.ID = name_t388.ID;
+select salary_t388.ID,Name,Salary from salary_t388 right join name_t388 on salary_t388.ID = name_t388.ID;
+ 
+CREATE TABLE HANDSETS (
+    SetCode VARCHAR(10) PRIMARY KEY,
+    SetName VARCHAR(50),
+    TouchScreen CHAR(1),
+    PhoneCost INT
+);
+
+INSERT INTO HANDSETS (SetCode, SetName, TouchScreen, PhoneCost)
+VALUES
+('N1', 'Nokia 2G', 'N', 5000),
+('N2', 'Nokia 3G', 'Y', 8000),
+('B1', 'BlackBerry', 'N', 14000);
+
+CREATE TABLE CUSTOMER (
+    CustNo INT PRIMARY KEY,
+    SetNo VARCHAR(10),
+    CustAddress VARCHAR(50),
+    FOREIGN KEY (SetNo) REFERENCES HANDSETS(SetCode)
+);
+
+INSERT INTO CUSTOMER (CustNo, SetNo, CustAddress)
+VALUES
+(1, 'N2', 'Delhi'),
+(2, 'B1', 'Mumbai'),
+(3, 'N2', 'Mumbai'),
+(4, 'N1', 'Kolkata'),
+(5, 'B1', 'Delhi');
+
+select CustNo,SetNo,CustAddress from customer inner join handsets on setno=setcode where setname like "Nokia%";
+
+-- outer join is not a keyword in join / sql it is union but it use in other sql working website like outter join= union and full outer join = union all
+select name_t388.ID as Name_id,salary_t388.ID as salary_ID,name,salary 
+from name_t388 
+left join 
+salary_t388
+on salary_t388.ID=name_t388.ID
+union all -- union is use to find only unique values not repeted whereas union all gives all the values from the table i.e duplicate values/repeted values
+select name_t388.ID as Name_id,salary_t388.ID as salary_ID,name,salary 
+from name_t388 
+right join 
+salary_t388
+on salary_t388.ID=name_t388.ID;
+
+
 
 
 
