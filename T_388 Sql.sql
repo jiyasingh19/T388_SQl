@@ -290,11 +290,118 @@ right join
 salary_t388
 on salary_t388.ID=name_t388.ID;
 
+-- 01-10-26
+-- window function ** 
+-- type of window function
+-- Ranking windoow function
+select 
+EmployeeID,
+Fullname,
+Department,
+Salary,
+row_number() over (partition by Department) As RankInDepartment 
+from
+t388.Employee;
+select * from employee;
+select Fullname,department,salary,rank() over(order by salary) AS Rank_InDepartment from t388.employee;
+
+select 
+EmployeeID,
+Fullname,
+Department,
+Salary,
+avg(salary) over (partition by Department) As DepartmentAVGSalary,
+sum(salary) over(partition by Department) As DepartmentTotalSalary
+from
+t388.Employee
+where gender ="Female"
+order by
+Department,Salary Desc;
 
 
+select 
+EmployeeID,
+Fullname,
+Department,
+Salary,
+AGE,
+LAG(Salary,1,0) over (order by Salary) AS PreviousEmployeeSalaryByAge ,
+(salary -(lag(salary,1,0)over(order by salary))) as diff
+from
+t388.Employee
+order by
+Salary;
 
 
+select 
+EmployeeID,
+Fullname,
+Department,
+Salary,
+AGE,
+LEAD(Salary,1,"-") over (order by Salary) AS PreviousEmployeeSalaryByAge
+from
+t388.Employee
+order by
+Salary;
+-- self join (** take this example fro interview purpose also**)
+create table EmployeeManager (
+Emp_id varchar(30),
+Emp_name varchar(40),
+Manager_ID int);
 
+insert into EmployeeManager values
+("1","Amar",4),
+("5","Akbar",4),
+("7","Anthony",Null),
+("4","Tom",7);
+select * from EmployeeManager;
+select 
+E.Emp_id,
+E.Emp_name as Employees,
+M.Emp_name as Manager
+from
+EmployeeManager AS E
+left join 
+EmployeeManager AS M
+on M.Emp_id = E.Manager_id;
+
+-- CROSS JOIN
+Create table ChessteamA(
+Team_A_ID int,
+Player_Name  varchar(50));
+Create table ChessteamB(
+Team_B_ID int,
+Player_Name  varchar(50));
+insert into ChessteamA value
+ (101,"Kiran"),
+ (102,"Kiran"),
+ (103,"Suman"),
+ (104,"Shekhar");
+ insert into ChessteamB value
+ (1,"Amir"),
+ (2,"Salman"),
+ (3,"Aditya");
+Select team_A_id,Team_b_id,A.Player_name,B.Player_name
+from 
+chessteamA AS A
+cross join 
+chessteamB AS B;
+
+-- VIEW view temperory data stored in sql database and can be used further in other queries
+Create view T388_view1 as
+Select team_A_id,Team_b_id,A.Player_name as Name_A,B.Player_name  as Name_B
+from 
+chessteamA AS A
+cross join 
+chessteamB AS B;
+select * from T388_view1;
+
+-- CTE cannot used further in other queries
+with T388_CTE as (select team_A_id, team_B_ID, A.player_name as Name_A, B.Player_name as Name_B
+from chessteamA as A
+cross join chessteamB as B)
+select * from T388_CTE;
 
 
 
