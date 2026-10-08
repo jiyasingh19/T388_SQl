@@ -42,4 +42,23 @@ delete from employee where id=666;
 -- 1NF **first normal form tackles the problem of atomicity
 -- (atomicity means value in the table should not be future divided)
 -- 2NF ** no partial dependency 
+-- 3 NF ** must be in 2NF+ eliminate transitive dependencies
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
